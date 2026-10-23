@@ -13,16 +13,24 @@
 #include <time.h>
 #include <unistd.h>
 
+// colors
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+#define RESET "\033[0m"
+
 unsigned int rng(unsigned int min, unsigned int max) {
   return min + (rand() % (max - min + 1));
 }
 
 int main() {
+  // init
   ma_engine en;
   ma_result en_init_result = ma_engine_init(NULL, &en); // engine init
   if (en_init_result != MA_SUCCESS) {
-    printf(
-        "gg something went wrong while trying to initialize the audio engine");
+    printf(RED "gg something went wrong while trying to initialize the audio "
+               "engine" RESET);
     return 1;
   }
 
@@ -31,23 +39,20 @@ int main() {
   int count = 0;
   char **bs = malloc(cap * sizeof(char *)); // to store pointers to strings
 
-  // main loop
-  int sel = 0;
-
   srand((unsigned int)time((NULL))); // seed
 
-  // TODO: beautify
+  // range input
   int max, min;
-  printf("Enter min and max wait time in seconds (min max): ");
+  printf(BLUE "Enter " RED "min " BLUE "and " RED "max " BLUE
+              "wait time in seconds (min max): " RESET);
   scanf("%d %d", &min, &max);
 
+  // main loop
   while (1) {
-    sleep(rng(min, max));
-
     DIR *d = opendir(".");
     if (!d) {
-      printf("gg something went wrong while tring to open current working "
-             "directory");
+      printf(RED "gg something went wrong while tring to open current working "
+                 "directory" RESET);
       return 1;
     }
 
@@ -62,12 +67,16 @@ int main() {
       }
     }
 
-    sel = rng(0, count - 1);
+    int sel = rng(0, count - 1);
+    int fun = rng(1, 5);
 
-    printf("Playing: %s\n", bs[sel]);
-    ma_result rr = ma_engine_play_sound(&en, bs[sel], NULL);
-    if (rr != MA_SUCCESS)
-      printf("gg playback error: %d\n", rr);
+    // increasing amplitude? whatever
+    printf(GREEN "Playing: %s X %d\n", bs[sel], fun);
+    for (int i = 0; i < fun; i++) {
+      ma_result rr = ma_engine_play_sound(&en, bs[sel], NULL);
+      if (rr != MA_SUCCESS)
+        printf(RED "gg playback error: " RESET "%d\n", rr);
+    }
 
     for (int i = 0; i < count; i++) {
       free(bs[i]);
@@ -75,5 +84,6 @@ int main() {
     closedir(d);
 
     count = 0;
+    sleep(rng(min, max));
   }
 }
