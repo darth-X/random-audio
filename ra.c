@@ -55,8 +55,16 @@ int main() {
   printf(BLUE "Enter " RED "min " BLUE "and " RED "max " BLUE
               "wait time in seconds (min max): " RESET);
   while (1) {
-    if (scanf("%d %d", &min, &max) == 2)
-      break;
+    if (scanf("%d %d", &min, &max) == 2) {
+      if (min <= max && min >= 0 && max >= 0)
+        break;
+      printf(RED "\ninvalid range, try again\n\n" RESET);
+
+      printf(BLUE "Enter " RED "min " BLUE "and " RED "max " BLUE
+                  "wait time in seconds (min max): " RESET);
+      flush();
+      continue;
+    }
     printf(RED "\ninvalid input, try again\n\n" RESET);
     printf(BLUE "Enter " RED "min " BLUE "and " RED "max " BLUE
                 "wait time in seconds (min max): " RESET);
@@ -69,8 +77,15 @@ int main() {
 
   printf(BLUE "Enter max fun value: " RESET);
   while (1) {
-    if (scanf("%d", &fun_max) == 1)
-      break;
+    if (scanf("%d", &fun_max) == 1) {
+      if (fun_max >= 1)
+        break;
+      printf(RED "\ninvalid range, try again\n\n" RESET);
+
+      printf(BLUE "Enter max fun value: " RESET);
+      flush();
+      continue;
+    }
     printf(RED "\ninvalid input, try again\n\n" RESET);
     printf(BLUE "Enter max fun value: " RESET);
     flush();
