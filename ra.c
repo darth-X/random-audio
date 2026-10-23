@@ -49,7 +49,6 @@ int main() {
   srand((unsigned int)time((NULL))); // seed
 
   // range input
-  // TODO: handle invalid range
   int max, min;
 
   printf(BLUE "Enter " RED "min " BLUE "and " RED "max " BLUE
