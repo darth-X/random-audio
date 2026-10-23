@@ -1,5 +1,6 @@
 // audio stuff | dep free
 #include <stddef.h>
+#include <stdint.h>
 #define MA_NO_FLAC
 #define MA_NO_VORBIS
 #define MINIAUDIO_IMPLEMENTATION
@@ -24,6 +25,12 @@ unsigned int rng(unsigned int min, unsigned int max) {
   return min + (rand() % (max - min + 1));
 }
 
+void flush() {
+  int c;
+  while ((c = getchar()) != '\n' && c != EOF)
+    ;
+}
+
 int main() {
   // init
   ma_engine en;
@@ -42,10 +49,32 @@ int main() {
   srand((unsigned int)time((NULL))); // seed
 
   // range input
+  // TODO: handle invalid range
   int max, min;
+
   printf(BLUE "Enter " RED "min " BLUE "and " RED "max " BLUE
               "wait time in seconds (min max): " RESET);
-  scanf("%d %d", &min, &max);
+  while (1) {
+    if (scanf("%d %d", &min, &max) == 2)
+      break;
+    printf(RED "\ninvalid input, try again\n\n" RESET);
+    printf(BLUE "Enter " RED "min " BLUE "and " RED "max " BLUE
+                "wait time in seconds (min max): " RESET);
+    flush();
+  }
+
+  flush();
+
+  int fun_max;
+
+  printf(BLUE "Enter max fun value: " RESET);
+  while (1) {
+    if (scanf("%d", &fun_max) == 1)
+      break;
+    printf(RED "\ninvalid input, try again\n\n" RESET);
+    printf(BLUE "Enter max fun value: " RESET);
+    flush();
+  }
 
   // main loop
   while (1) {
@@ -68,7 +97,9 @@ int main() {
     }
 
     int sel = rng(0, count - 1);
-    int fun = rng(1, 5);
+    int fun = 1;
+    if (fun_max > 1)
+      fun = rng(1, fun_max);
 
     // increasing amplitude? whatever
     printf(GREEN "Playing: %s X %d\n", bs[sel], fun);
